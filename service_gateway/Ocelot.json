@@ -14,6 +14,18 @@
       "UpstreamHttpMethod": [
         "Get"
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/uc/{url}",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "127.0.0.1",
+          "Port": 18081
+        }
+      ]
     }
   ],
   "GlobalConfiguration": {
