@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,19 @@ namespace service_gateway
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseOcelot().Wait();
+            app.UseOcelot(config =>
+            {
+                config.AuthenticationMiddleware = async (context, next) =>
+                {
+                    Console.WriteLine("授权 AuthenticationMiddleware ccccc");
+                    await next.Invoke();
+                };
+                config.AuthorisationMiddleware = async (context, next) =>
+                {
+                    Console.WriteLine("认证");
+                    await next.Invoke();
+                };
+            }).Wait();
 
             // app.UseRouting();
             // app.UseAuthorization();
