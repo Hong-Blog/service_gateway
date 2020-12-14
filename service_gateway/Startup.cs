@@ -11,7 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ocelot.DependencyInjection;
+using Ocelot.Logging;
 using Ocelot.Middleware;
+using service_gateway.Middleware;
 
 namespace service_gateway
 {
@@ -27,7 +29,6 @@ namespace service_gateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddControllers();
             services.AddOcelot();
         }
 
@@ -39,26 +40,30 @@ namespace service_gateway
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseOcelot(config =>
-            {
-                config.AuthenticationMiddleware = async (context, next) =>
-                {
-                    Console.WriteLine("授权 AuthenticationMiddleware ccccc");
-                    await next.Invoke();
-                };
-                config.AuthorisationMiddleware = async (context, next) =>
-                {
-                    Console.WriteLine("认证");
-                    await next.Invoke();
-                };
-            }).Wait();
+            app.UseHongAuthenticationMiddleware();
+            app.UseOcelot(PipelineConfiguration).Wait();
+        }
 
-            // app.UseRouting();
-            // app.UseAuthorization();
-            // app.UseEndpoints(endpoints =>
-            // {
-            // endpoints.MapControllers();
-            // });
+        private void PipelineConfiguration(OcelotPipelineConfiguration config)
+        {
+            config.AuthenticationMiddleware = AuthenticationMiddleware;
+
+            config.AuthorisationMiddleware = async (context, next) =>
+            {
+                var logger = context.RequestServices.GetService<IOcelotLoggerFactory>();
+                var ocelotLogger = logger.CreateLogger<Startup>();
+                ocelotLogger.LogInformation("授权。。。。");
+                await next.Invoke();
+            };
+        }
+
+        private Task AuthenticationMiddleware(HttpContext context, Func<Task> next)
+        {
+            var logger = context.RequestServices.GetService<IOcelotLoggerFactory>();
+            var ocelotLogger = logger.CreateLogger<Startup>();
+            ocelotLogger.LogInformation("认证。。。");
+
+            return next.Invoke();
         }
     }
 }
