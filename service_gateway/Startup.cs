@@ -40,7 +40,7 @@ namespace service_gateway
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHongAuthenticationMiddleware();
+            // app.UseHongAuthenticationMiddleware();
             app.UseOcelot(PipelineConfiguration).Wait();
         }
 
