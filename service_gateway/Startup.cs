@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +32,7 @@ namespace service_gateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient();
             services.AddOcelot();
         }
 
@@ -48,22 +52,72 @@ namespace service_gateway
         {
             config.AuthenticationMiddleware = AuthenticationMiddleware;
 
-            config.AuthorisationMiddleware = async (context, next) =>
-            {
-                var logger = context.RequestServices.GetService<IOcelotLoggerFactory>();
-                var ocelotLogger = logger.CreateLogger<Startup>();
-                ocelotLogger.LogInformation("授权。。。。");
-                await next.Invoke();
-            };
+            config.AuthorisationMiddleware = AuthorisationMiddleware;
         }
 
-        private Task AuthenticationMiddleware(HttpContext context, Func<Task> next)
+        private async Task AuthorisationMiddleware(HttpContext context, Func<Task> next)
         {
             var logger = context.RequestServices.GetService<IOcelotLoggerFactory>();
             var ocelotLogger = logger.CreateLogger<Startup>();
-            ocelotLogger.LogInformation("认证。。。");
+            ocelotLogger.LogInformation("授权。。。。");
+            await next.Invoke();
+        }
 
-            return next.Invoke();
+        private async Task AuthenticationMiddleware(HttpContext context, Func<Task> next)
+        {
+            if (IsOptionsHttpMethod(context))
+            {
+                await next.Invoke();
+                return;
+            }
+
+            var loggerFactory = context.RequestServices.GetService<IOcelotLoggerFactory>();
+            var httpClientFactory = context.RequestServices.GetService<IHttpClientFactory>();
+
+            var logger = loggerFactory.CreateLogger<Startup>();
+            logger.LogInformation("认证。。。");
+
+            var downstreamRoute = context.Items.DownstreamRoute();
+            if (downstreamRoute.UpstreamPathTemplate.OriginalValue.StartsWith("/v1/li"))
+            {
+                logger.LogInformation("login 服务 无需认证");
+                await next.Invoke();
+                return;
+            }
+
+            if (!context.Request.Headers.TryGetValue("Authorization", out var authorizationValues))
+            {
+                context.Items.SetError(new UnauthenticatedError("未发现认证字段"));
+                return;
+            }
+
+            var authorizationHeader = authorizationValues.FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(authorizationHeader))
+            {
+                context.Items.SetError(new UnauthenticatedError("认证字段为空"));
+                return;
+            }
+
+            const string url = "http://127.0.0.1:18082/authorization";
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
+            requestMessage.Headers.Add("Accept", "application/json; charset=utf-8");
+            requestMessage.Headers.Add("Authorization", authorizationHeader);
+            var httpClient = httpClientFactory.CreateClient();
+            var responseMessage = await httpClient.SendAsync(requestMessage);
+            if (responseMessage.StatusCode == HttpStatusCode.OK)
+            {
+                await next.Invoke();
+                return;
+            }
+
+            context.Items.SetError(new UnauthenticatedError("认证失败"));
+            var response = await responseMessage.Content.ReadAsStringAsync();
+            await context.Response.WriteAsync(response);
+        }
+
+        private static bool IsOptionsHttpMethod(HttpContext httpContext)
+        {
+            return httpContext.Request.Method.ToUpper() == "OPTIONS";
         }
     }
 }
