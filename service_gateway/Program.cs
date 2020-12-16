@@ -22,7 +22,9 @@ namespace service_gateway
                 {
                     builder
                         .SetBasePath(hostingContext.HostingEnvironment.ContentRootPath)
-                        .AddJsonFile("Ocelot.json");
+                        .AddJsonFile("Ocelot.json")
+                        .AddJsonFile($"Ocelot.{hostingContext.HostingEnvironment.EnvironmentName}.json")
+                        .AddEnvironmentVariables();
                 })
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }

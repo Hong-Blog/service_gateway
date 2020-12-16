@@ -8,8 +8,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "127.0.0.1",
-          "Port": 18081
+          "Host": "hong-user-center.web",
+          "Port": 8081
         }
       ]
     },
@@ -20,8 +20,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "127.0.0.1",
-          "Port": 18082
+          "Host": "hong-login.web",
+          "Port": 8082
         }
       ]
     }

@@ -14,5 +14,14 @@
     <Folder Include="Controllers" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\build_image.bat">
+      <Link>build_image.bat</Link>
+    </Content>
+    <Content Include="..\Dockerfile">
+      <Link>Dockerfile</Link>
+    </Content>
+  </ItemGroup>
+
 
 </Project>
