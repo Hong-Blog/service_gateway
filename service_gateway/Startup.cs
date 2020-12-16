@@ -51,7 +51,6 @@ namespace service_gateway
         private void PipelineConfiguration(OcelotPipelineConfiguration config)
         {
             config.AuthenticationMiddleware = AuthenticationMiddleware;
-
             config.AuthorisationMiddleware = AuthorisationMiddleware;
         }
 
@@ -98,7 +97,8 @@ namespace service_gateway
                 return;
             }
 
-            const string url = "http://127.0.0.1:18082/authorization";
+            var loginService = Configuration.GetValue<string>("login_service") ?? "http://127.0.0.1:18082";
+            var url = $"{loginService}/authorization";
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
             requestMessage.Headers.Add("Accept", "application/json; charset=utf-8");
             requestMessage.Headers.Add("Authorization", authorizationHeader);
@@ -110,9 +110,7 @@ namespace service_gateway
                 return;
             }
 
-            context.Items.SetError(new UnauthenticatedError("认证失败"));
-            var response = await responseMessage.Content.ReadAsStringAsync();
-            await context.Response.WriteAsync(response);
+            context.Items.UpsertDownstreamResponse(new DownstreamResponse(responseMessage));
         }
 
         private static bool IsOptionsHttpMethod(HttpContext httpContext)

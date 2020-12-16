@@ -20,7 +20,8 @@ namespace service_gateway.Middleware
             var downstreamRoute = httpContext.Items.DownstreamRoute();
 
             Logger.LogInformation("认证");
-            await _next.Invoke(httpContext);
+            // await _next.Invoke(httpContext);
+            await httpContext.Response.WriteAsync("测试拦截请求");
         }
     }
 }
