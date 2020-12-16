@@ -16,7 +16,6 @@ using Microsoft.Extensions.Logging;
 using Ocelot.DependencyInjection;
 using Ocelot.Logging;
 using Ocelot.Middleware;
-using service_gateway.Middleware;
 
 namespace service_gateway
 {
