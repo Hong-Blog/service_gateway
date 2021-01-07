@@ -24,6 +24,18 @@
           "Port": 18082
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/a/{url}",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "127.0.0.1",
+          "Port": 18083
+        }
+      ]
     }
   ]
 }

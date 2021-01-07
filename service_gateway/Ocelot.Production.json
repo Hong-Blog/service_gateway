@@ -24,6 +24,18 @@
           "Port": 8082
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/a/{url}",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hong-post.web",
+          "Port": 80
+        }
+      ]
     }
   ]
 }
