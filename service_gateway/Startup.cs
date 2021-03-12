@@ -76,7 +76,8 @@ namespace service_gateway
             logger.LogInformation("认证。。。");
 
             var downstreamRoute = context.Items.DownstreamRoute();
-            if (downstreamRoute.UpstreamPathTemplate.OriginalValue.StartsWith("/v1/li"))
+            if (downstreamRoute.UpstreamPathTemplate.OriginalValue.StartsWith("/v1/login") ||
+                downstreamRoute.UpstreamPathTemplate.OriginalValue.StartsWith("/v1/authorization"))
             {
                 logger.LogInformation("login 服务 无需认证");
                 await next.Invoke();

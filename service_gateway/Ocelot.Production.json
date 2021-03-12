@@ -2,33 +2,141 @@
   "$schema": "http://json.schemastore.org/ocelot",
   "Routes": [
     {
-      "UpstreamPathTemplate": "/v1/uc/{url}",
+      "UpstreamPathTemplate": "/v1/users",
       "UpstreamHttpMethod": [],
-      "DownstreamPathTemplate": "/{url}",
+      "DownstreamPathTemplate": "/users",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "hong-user-center.web",
-          "Port": 8081
+          "Port": 80
         }
       ]
     },
     {
-      "UpstreamPathTemplate": "/v1/li/{url}",
+      "UpstreamPathTemplate": "/v1/users/{param}",
       "UpstreamHttpMethod": [],
-      "DownstreamPathTemplate": "/{url}",
+      "DownstreamPathTemplate": "/users/{param}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hong-user-center.web",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/roles/{param}",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/roles/{param}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hong-user-center.web",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/roles",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/roles",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hong-user-center.web",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/login",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/login",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "hong-login.web",
-          "Port": 8082
+          "Port": 80
         }
       ]
     },
     {
-      "UpstreamPathTemplate": "/v1/a/{url}",
+      "UpstreamPathTemplate": "/v1/authorization",
       "UpstreamHttpMethod": [],
-      "DownstreamPathTemplate": "/{url}",
+      "DownstreamPathTemplate": "/authorization",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hong-login.web",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/posts",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/posts",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hong-post.web",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/posts/{url}",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/posts/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hong-post.web",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/categories",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/categories",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hong-post.web",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/categories/{url}",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/categories/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hong-post.web",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/tags",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/tags",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "hong-post.web",
+          "Port": 80
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/v1/tags/{url}",
+      "UpstreamHttpMethod": [],
+      "DownstreamPathTemplate": "/tags/{url}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
